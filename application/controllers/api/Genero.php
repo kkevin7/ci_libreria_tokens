@@ -81,7 +81,7 @@ class Genero extends REST_Controller
       // JWT library throws exception if the token is not valid
       try {
           // Validamos que el token exista 
-          // Si toda de manera correcta generar un respuesta con estatus 200 OK
+          // Si toda de manera correcta generar un respuesta con status 200 OK
           // Si no delvera un respuesta con estatus 401 UNAUTHORIZED que no esta autorizado
           $data = AUTHORIZATION::validateToken($token);
           if ($data === false) {
@@ -96,6 +96,21 @@ class Genero extends REST_Controller
           // Enviado que la petición no fue autorizada
           $response = ['msg' => 'Unauthorized Access! ', 'status' => parent::HTTP_UNAUTHORIZED];
           return $response;
+      }
+  }
+
+  public function get_data_token_post()
+  {
+      // Llamos al meétodo que verificara que el token sea valido
+      $response = $this->verify_request();
+      // Verificamos que la peticion fue exitosa
+      if($response['status'] == 200){
+          $response = array_merge($response, array('data' => $this->Genero_model->findAll()));
+          // Enviamos una respuesta con los datos solicitados
+          $this->response($response, $response['status']);
+      }else{
+          // Sino fue correcta enviamos que no se puedo realizar la peticion
+          $this->response($response, $response['status']);
       }
   }
 
